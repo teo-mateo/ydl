@@ -11,14 +11,8 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/rylio/ytdl"
-)
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "spanack"
-	dbname   = "postgres"
+	ydlconf "github.com/teo-mateo/ydl/config"
 )
 
 func main() {
@@ -78,7 +72,8 @@ func queueNewDL(url string, who string) {
 		return
 	}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		ydlconf.PgHost(), ydlconf.PgPort(), ydlconf.PgUser(), ydlconf.PgPassword(), ydlconf.PgDb())
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
