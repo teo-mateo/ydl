@@ -1,6 +1,7 @@
 package config
 
 import "os"
+import "strconv"
 
 // PgUser ...
 func PgUser() string {
@@ -19,7 +20,8 @@ func PgHost() string {
 
 // PgPort ...
 func PgPort() int {
-	return 5432
+	port, _ := strconv.Atoi(os.Getenv("PG_PORT"))
+	return port
 }
 
 // PgDb ...
