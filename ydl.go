@@ -21,6 +21,7 @@ func main() {
 		http.HandleFunc("/ydl", ydlHandler)
 
 		fmt.Println("Starting YDL, port 8080.")
+		fmt.Println("PG Conn: " + ydlconf.PgConnectionString())
 
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	} else if len(os.Args) == 2 {
