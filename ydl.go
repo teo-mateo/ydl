@@ -16,11 +16,12 @@ import (
 )
 
 func main() {
-	fmt.Println("YDL Started.")
-	fmt.Println("Args: ", os.Args)
 
 	if len(os.Args) == 1 {
 		http.HandleFunc("/ydl", ydlHandler)
+
+		fmt.Println("Starting YDL, port 8080.")
+
 		log.Fatal(http.ListenAndServe(":8080", nil))
 	} else if len(os.Args) == 2 {
 		vid, err := ytdl.GetVideoInfo(os.Args[1])
