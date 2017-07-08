@@ -11,6 +11,7 @@
   },
   "permissions": [
     "activeTab",
-    "http://localhost:8080/"
+    "http://localhost:8080/",
+    "http://bardici.ro:8080/"
   ]
 }
