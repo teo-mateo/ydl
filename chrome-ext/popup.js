@@ -49,8 +49,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //AJAX call
     var x = new XMLHttpRequest();
-    //x.open('GET', "http://bardici.ro:8080/ydl?who=ami&v="+url);
-    x.open('GET', "http://localhost:8080/ydl?who=ami&v="+url);
+    x.open('GET', "http://bardici.ro:8080/ydl?who=ami&v="+url);
+    //x.open('GET', "http://localhost:8080/ydl?who=ami&v="+url);
     x.onload = function(){
       renderStatus('Queued....');
     }
