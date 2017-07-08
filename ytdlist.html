@@ -1,0 +1,13 @@
+<html>
+    <head>
+        <title> YDL list </title>
+    </head>
+    <body>
+        <p>get it now </p>
+        <ul>
+            {{ range $key, $value := . }}
+                <li><strong>{{ $key }}</strong>: <a href="download?id={{ $key }}">{{ $value }}</a></li>
+            {{ end }}
+        </ul>
+    </body>
+</html>

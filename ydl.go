@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -19,6 +20,8 @@ func main() {
 
 	if len(os.Args) == 1 {
 		http.HandleFunc("/ydl", ydlHandler)
+		http.HandleFunc("/list", listHandler)
+		http.HandleFunc("/download", downloadHandler)
 
 		fmt.Println("Starting YDL, port 8080.")
 		fmt.Println("PG Conn: " + ydlconf.PgConnectionString())
@@ -48,6 +51,57 @@ func main() {
 	}
 }
 
+func listHandler(w http.ResponseWriter, r *http.Request) {
+
+	psqlInfo := ydlconf.PgConnectionString()
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
+
+	rows, err := db.Query("SELECT id, file FROM yqueue WHERE status = 3")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var id int
+	var fname string
+	m := make(map[int]string)
+
+	for rows.Next() {
+		err = rows.Scan(&id, &fname)
+		m[id] = fname
+	}
+
+	t, _ := template.ParseFiles("ytdlist.html")
+	t.Execute(w, m)
+}
+
+func downloadHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+	psqlInfo := ydlconf.PgConnectionString()
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer db.Close()
+
+	row := db.QueryRow("SELECT file FROM yqueue WHERE status = 3 AND id = " + id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var fname string
+	row.Scan(&fname)
+	_, shortname := filepath.Split(fname)
+	w.Header().Set("Content-type", "application/mp3")
+	w.Header().Set("Content-Disposition", "attachment; filename="+shortname)
+	http.ServeFile(w, r, fname)
+}
+
 func ydlHandler(w http.ResponseWriter, r *http.Request) {
 
 	who := r.URL.Query().Get("who")
@@ -75,7 +129,6 @@ func queueNewDL(url string, who string) {
 	}
 
 	psqlInfo := ydlconf.PgConnectionString()
-
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		fmt.Println(err)
