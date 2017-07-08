@@ -73,8 +73,7 @@ func queueNewDL(url string, who string) {
 		return
 	}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		ydlconf.PgHost(), ydlconf.PgPort(), ydlconf.PgUser(), ydlconf.PgPassword(), ydlconf.PgDb())
+	psqlInfo := ydlconf.PgConnectionString()
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {

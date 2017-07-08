@@ -1,7 +1,10 @@
 package config
 
-import "os"
-import "strconv"
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
 
 // PgUser ...
 func PgUser() string {
@@ -27,4 +30,9 @@ func PgPort() int {
 // PgDb ...
 func PgDb() string {
 	return "postgres"
+}
+
+// PgConnectionString ...
+func PgConnectionString() string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", PgHost(), PgPort(), PgUser(), PgPassword(), PgDb())
 }
