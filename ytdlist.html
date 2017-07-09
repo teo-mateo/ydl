@@ -6,7 +6,7 @@
         <p>get it now </p>
         <ul>
             {{ range $key, $value := . }}
-                <li><strong>{{ $key }}</strong>: <a href="download?id={{ $key }}">{{ $value }}</a></li>
+                <li><strong>{{ $key }}</strong>: <a href="download?id={{ $key }}">{{ $value }}</a> | <a href="delete?id={{ $key }}">DELETE</a></li>
             {{ end }}
         </ul>
     </body>
