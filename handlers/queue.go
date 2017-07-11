@@ -1,23 +1,25 @@
 package handlers
 
 import (
-	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/kennygrant/sanitize"
+
+	//I do this because I want this. fuck your motherfucking warnings.
+	_ "github.com/lib/pq"
 	"github.com/rylio/ytdl"
-	ydlconf "github.com/teo-mateo/ydl/config"
+	"github.com/teo-mateo/ydl/ydata"
 )
 
 // QueueHandler ...
 func QueueHandler(w http.ResponseWriter, r *http.Request) {
 	who := r.URL.Query().Get("who")
 	if who == "" {
-		fmt.Println("who query param missing")
+		log.Println("who query param missing")
 		return
 	}
 
@@ -28,38 +30,29 @@ func QueueHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("v: " + v)
-	go queueNewDL(v, who)
+	queueNewDL(v, who)
 }
 
-func queueNewDL(url string, who string) {
+func queueNewDL(url string, who string) error {
+
+	id, err := ydata.YQueueAdd(url)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	vid, err := ytdl.GetVideoInfo(url)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
 
-	psqlInfo := ydlconf.PgConnectionString()
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
+	//trigger download on a different routine
+	go downloadVid(vid, who, id)
 
-	//query := fmt.Sprintf("INSERT INTO yqueue (yturl, status, lastupdate) VALUES('%s', 1, '%s') RETURNING id", url, time.Now().Format("2006-01-02 15:04:05.000"))
-	query := "INSERT INTO yqueue (yturl, status, lastupdate) VALUES($1, 1, $2) RETURNING id"
+	return nil
+}
 
-	stmt, err := db.Prepare(query)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer stmt.Close()
-
-	var newid int
-	err = stmt.QueryRow(url, time.Now().Format("2006-01-02 15:04:05.000")).Scan(&newid)
-	if err != nil {
-		fmt.Println(err)
-	}
+func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 
 	for _, format := range vid.Formats {
 		if format.Itag == 139 ||
@@ -87,8 +80,7 @@ func queueNewDL(url string, who string) {
 			//if file exists, skip download and set status to "SKIPPED"
 			if _, err := os.Stat(fname); !os.IsNotExist(err) {
 				fmt.Println("File exists, skipping download.")
-				query = fmt.Sprintf("UPDATE yqueue SET status = 5 WHERE id=%d", newid)
-				_, err := db.Exec(query)
+				err = ydata.YQueueUpdate(newid, 5)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -97,25 +89,23 @@ func queueNewDL(url string, who string) {
 			}
 
 			//download to file
-			err = downloadFormat(fname, format, vid)
+			err := downloadFormat(fname, format, vid)
 
 			if err != nil {
-				fmt.Println("YDL ERROR for " + fname)
+				log.Println("YDL ERROR for " + fname)
 
 				//update with status ERROR
-				query = fmt.Sprintf("UPDATE yqueue SET status = 4 WHERE id=%d", newid)
-				_, err := db.Exec(query)
+				err = ydata.YQueueUpdate(newid, 4)
 				if err != nil {
-					fmt.Println(err)
+					log.Println(err)
 				}
 			} else {
 				fmt.Println("YDL DONE for " + fname)
 
-				//update with status OK and filename
-				query = fmt.Sprintf("UPDATE yqueue SET status = 3, file='%s' WHERE id=%d", fname, newid)
-				_, err := db.Exec(query)
+				//update with status OK and filename (fname)
+				err = ydata.YQueueUpdate(newid, 3, fname)
 				if err != nil {
-					fmt.Println(err)
+					log.Println(err)
 				}
 			}
 
