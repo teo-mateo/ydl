@@ -3,7 +3,7 @@
         <title> YDL list </title>
     </head>
     <body>
-        <p>get it now </p>
+        <p>GET it now! </p>
         <ul>
             {{ range $key, $value := . }}
                 <li><strong>{{ $key }}</strong>: <a href="download?id={{ $key }}">{{ $value }}</a> | <a href="delete?id={{ $key }}">DELETE</a></li>
