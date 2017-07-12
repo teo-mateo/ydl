@@ -80,7 +80,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 			//if file exists, skip download and set status to "SKIPPED"
 			if _, err := os.Stat(fname); !os.IsNotExist(err) {
 				fmt.Println("File exists, skipping download.")
-				err = ydata.YQueueUpdate(newid, 5)
+				err = ydata.YQueueUpdate(newid, ydata.STATUSSkipped5)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -95,7 +95,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 				log.Println("YDL ERROR for " + fname)
 
 				//update with status ERROR
-				err = ydata.YQueueUpdate(newid, 4)
+				err = ydata.YQueueUpdate(newid, ydata.STATUSError4)
 				if err != nil {
 					log.Println(err)
 				}
@@ -103,7 +103,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 				fmt.Println("YDL DONE for " + fname)
 
 				//update with status OK and filename (fname)
-				err = ydata.YQueueUpdate(newid, 3, fname)
+				err = ydata.YQueueUpdate(newid, ydata.STATUSDownloaded3, fname)
 				if err != nil {
 					log.Println(err)
 				}

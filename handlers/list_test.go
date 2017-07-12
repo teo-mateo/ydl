@@ -6,9 +6,8 @@ import (
 	"testing"
 )
 
-func TestQueueHandler(t *testing.T) {
-
-	url := "http://localhost:8080/ydl?who=test&v=http://unittests.com"
+func TestListHandler(t *testing.T) {
+	url := "http://localhost:8080/list"
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		t.Error("Error creating request")
@@ -16,10 +15,9 @@ func TestQueueHandler(t *testing.T) {
 
 	rec := httptest.NewRecorder()
 
-	QueueHandler(rec, req)
+	ListHandler(rec, req)
 
 	if rec.Result().StatusCode != 200 {
 		t.Fatalf("Expected status %d, got %d", 201, rec.Result().StatusCode)
 	}
-
 }

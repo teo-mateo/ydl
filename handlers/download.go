@@ -1,34 +1,43 @@
 package handlers
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"path/filepath"
 
-	ydlconf "github.com/teo-mateo/ydl/config"
+	"strconv"
+
+	"github.com/teo-mateo/ydl/util"
+	ydata "github.com/teo-mateo/ydl/ydata"
 )
 
 // DownloadHandler ...
 func DownloadHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Query().Get("id")
-	psqlInfo := ydlconf.PgConnectionString()
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer db.Close()
 
-	row := db.QueryRow("SELECT file FROM yqueue WHERE status = 3 AND id = " + id)
+	//get id from url
+	id, err := strconv.Atoi(r.URL.Query().Get("id"))
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	var fname string
-	row.Scan(&fname)
-	_, shortname := filepath.Split(fname)
+	//get file name
+	result, err := ydata.YQueueGet(id)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	//check if file exists
+	if !util.FileExists(result.File.String) {
+		fmt.Printf("Requested file was not found: %s", result.File.String)
+		return
+	}
+
+	//serve file
+	_, shortname := filepath.Split(result.File.String)
+	fmt.Println("Serving file: " + shortname)
 	w.Header().Set("Content-type", "application/mp3")
 	w.Header().Set("Content-Disposition", "attachment; filename="+shortname)
-	http.ServeFile(w, r, fname)
+	http.ServeFile(w, r, result.File.String)
 }
