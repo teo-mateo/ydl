@@ -111,6 +111,22 @@ func YQueueGetAll(status int) ([]YQueue, error) {
 	return result, nil
 }
 
+//YQueueDelete ...
+func YQueueDelete(id int) error {
+	db, err := connect()
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	_, err = db.Exec(fmt.Sprintf("select yqueue_del(%d)", id))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // YQueue ...
 type YQueue struct {
 	ID         int
