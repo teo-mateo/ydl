@@ -14,6 +14,7 @@ import (
 func main() {
 	fmt.Println("Starting YDL, port 8080.")
 	fmt.Println("PG Conn: " + ydlconf.PgConnectionString())
+	fmt.Println("Will convert to mp3")
 
 	http.HandleFunc("/ydl", handlers.QueueHandler)
 	http.HandleFunc("/list", handlers.ListHandler)
