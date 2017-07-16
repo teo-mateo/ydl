@@ -9,10 +9,11 @@ import (
 
 	"github.com/kennygrant/sanitize"
 
-	//I do this because I want this. fuck your motherfucking warnings.
 	_ "github.com/lib/pq"
 	"github.com/rylio/ytdl"
 	"github.com/teo-mateo/ydl/ydata"
+	"os/exec"
+	"strings"
 )
 
 // QueueHandler ...
@@ -72,6 +73,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 				err = os.Mkdir(targetdir, os.ModeDir)
 				if err != nil {
 					fmt.Println(err)
+					return
 				}
 			}
 
@@ -83,6 +85,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 				err = ydata.YQueueUpdate(newid, ydata.STATUSSkipped5)
 				if err != nil {
 					fmt.Println(err)
+					return
 				}
 
 				break
@@ -98,15 +101,68 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 				err = ydata.YQueueUpdate(newid, ydata.STATUSError4)
 				if err != nil {
 					log.Println(err)
+					return
 				}
 			} else {
-				fmt.Println("YDL DONE for " + fname)
+				fmt.Println("YDL Download DONE for " + fname)
 
 				//update with status OK and filename (fname)
 				err = ydata.YQueueUpdate(newid, ydata.STATUSDownloaded3, fname)
 				if err != nil {
 					log.Println(err)
+					return
 				}
+
+				fmt.Println("Now converting to Mp3 format")
+
+				mp3fname := strings.Replace(filepath.Base(fname), ".mp4", ".mp3", 1)
+				mp3fname = filepath.Join(targetdir, mp3fname)
+				if _, err := os.Stat(mp3fname); os.IsExist(err){
+					fmt.Println("Mp3 file already exists, skipping convert.")
+					err = ydata.YQueueUpdate(newid, ydata.STATUSSkipped5, mp3fname)
+					if err != nil{
+						fmt.Println(err)
+					}
+				} else {
+					//use ffmpeg to convert to mp3
+					//ffmpegArgs := fmt.Sprintf("-i \"%s\" \"%s\"", fname, mp3fname)
+					//fmt.Printf("CMD: %s %s\n", "ffmpeg", ffmpegArgs)
+					cmd := exec.Command("ffmpeg", "-i", fname, mp3fname)
+
+					fmt.Printf("ffmpeg -i \"%s\" \"%s\" \n", fname, mp3fname)
+
+					err := cmd.Start()
+					if err != nil{
+						fmt.Println("Could not start ffmpeg process.")
+					}
+
+					err = cmd.Wait()
+					if err != nil {
+						fmt.Println(err)
+						return
+					}
+
+					fmt.Println("Done converting: ", mp3fname)
+
+					//check: mp3 file must exist now
+					if _, err := os.Stat(mp3fname); os.IsNotExist(err){
+						fmt.Println("Something went wrong during conversion: Mp3 file does not exist.")
+						return
+					}
+
+					//update db
+					err = ydata.YQueueUpdate(newid, ydata.STATUSDownloaded3, mp3fname)
+					if err != nil{
+						log.Println(err)
+						return
+					}
+
+					//delete mp4 file
+					fmt.Println("Deleting: ", fname)
+					os.Remove(fname)
+
+				}
+
 			}
 
 			return

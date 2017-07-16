@@ -24,5 +24,10 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	t, _ := template.ParseFiles("ytdlist.html")
-	t.Execute(w, m)
+	err = t.Execute(w, m)
+	if err != nil{
+		w.Write([]byte(err.Error()))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 }

@@ -19,6 +19,7 @@ func main() {
 	http.HandleFunc("/list", handlers.ListHandler)
 	http.HandleFunc("/download", handlers.DownloadHandler)
 	http.HandleFunc("/delete", handlers.DeleteHandler)
+	http.HandleFunc("/static/", handlers.StaticFilesHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
