@@ -11,7 +11,9 @@ import (
 // ListHandler ...
 func ListHandler(w http.ResponseWriter, r *http.Request) {
 
-	records, err := ydata.YQueueGetAll(ydata.STATUSDownloaded3)
+	who := r.RequestURI[6:]
+
+	records, err := ydata.YQueueGetAll(ydata.STATUSDownloaded3, who)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -25,7 +27,7 @@ func ListHandler(w http.ResponseWriter, r *http.Request) {
 
 	t, _ := template.ParseFiles("ytdlist.html")
 	err = t.Execute(w, m)
-	if err != nil{
+	if err != nil {
 		w.Write([]byte(err.Error()))
 		w.WriteHeader(http.StatusInternalServerError)
 		return

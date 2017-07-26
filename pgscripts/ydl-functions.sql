@@ -39,7 +39,8 @@ ALTER FUNCTION public.yqueue_get(integer)
 
 CREATE OR REPLACE FUNCTION public.yqueue_get(
     p_id integer,
-    p_status integer)
+    p_status integer, 
+    p_who text)
   RETURNS SETOF yqueue AS
 $BODY$
 	select * from yqueue 
@@ -47,12 +48,14 @@ $BODY$
 		id = (case when p_id is null then id else p_id end) 
 		and 
 		status = (case when p_status is null then status else p_status end)
+    and 
+    who = (case when p_who is null then who else p_who end)
 	order by lastupdate asc
 $BODY$
   LANGUAGE sql VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION public.yqueue_get(integer, integer)
+ALTER FUNCTION public.yqueue_get(integer, integer, text)
   OWNER TO postgres;
 
 ----------
@@ -61,10 +64,10 @@ ALTER FUNCTION public.yqueue_get(integer, integer)
 
 -- DROP FUNCTION public.yqueue_ins(text);
 
-CREATE OR REPLACE FUNCTION public.yqueue_ins(p_yturl text)
+CREATE OR REPLACE FUNCTION public.yqueue_ins(p_yturl text, p_who text)
   RETURNS integer AS
 $BODY$
-	insert into yqueue (yturl, status, file) values (p_yturl, 1, null)
+	insert into yqueue (yturl, status, file, who) values (p_yturl, 1, null, p_who)
 	returning id
 $BODY$
   LANGUAGE sql VOLATILE

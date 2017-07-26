@@ -32,11 +32,14 @@ func DeleteHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//delete file from disk
-	err = os.Remove(record.File.String)
-	if err != nil {
-		log.Println(err)
-		return
+	//check if the file is still there to delete
+	if _, err := os.Stat(record.File.String); !os.IsNotExist(err) {
+		//delete file from disk
+		err = os.Remove(record.File.String)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 	}
 
 	//delete row from db

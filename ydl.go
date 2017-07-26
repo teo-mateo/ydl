@@ -17,7 +17,7 @@ func main() {
 	fmt.Println("Will convert to mp3")
 
 	http.HandleFunc("/ydl", handlers.QueueHandler)
-	http.HandleFunc("/list", handlers.ListHandler)
+	http.HandleFunc("/list/", handlers.ListHandler)
 	http.HandleFunc("/download", handlers.DownloadHandler)
 	http.HandleFunc("/delete", handlers.DeleteHandler)
 	http.HandleFunc("/static/", handlers.StaticFilesHandler)

@@ -9,11 +9,13 @@ import (
 
 	"github.com/kennygrant/sanitize"
 
+	"os/exec"
+	"strings"
+
+	//...
 	_ "github.com/lib/pq"
 	"github.com/rylio/ytdl"
 	"github.com/teo-mateo/ydl/ydata"
-	"os/exec"
-	"strings"
 )
 
 // QueueHandler ...
@@ -36,7 +38,7 @@ func QueueHandler(w http.ResponseWriter, r *http.Request) {
 
 func queueNewDL(url string, who string) error {
 
-	id, err := ydata.YQueueAdd(url)
+	id, err := ydata.YQueueAdd(url, who)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -117,10 +119,10 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 
 				mp3fname := strings.Replace(filepath.Base(fname), ".mp4", ".mp3", 1)
 				mp3fname = filepath.Join(targetdir, mp3fname)
-				if _, err := os.Stat(mp3fname); os.IsExist(err){
+				if _, err := os.Stat(mp3fname); os.IsExist(err) {
 					fmt.Println("Mp3 file already exists, skipping convert.")
 					err = ydata.YQueueUpdate(newid, ydata.STATUSSkipped5, mp3fname)
-					if err != nil{
+					if err != nil {
 						fmt.Println(err)
 					}
 				} else {
@@ -132,7 +134,7 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 					fmt.Printf("ffmpeg -i \"%s\" \"%s\" \n", fname, mp3fname)
 
 					err := cmd.Start()
-					if err != nil{
+					if err != nil {
 						fmt.Println("Could not start ffmpeg process.")
 					}
 
@@ -145,14 +147,14 @@ func downloadVid(vid *ytdl.VideoInfo, who string, newid int) {
 					fmt.Println("Done converting: ", mp3fname)
 
 					//check: mp3 file must exist now
-					if _, err := os.Stat(mp3fname); os.IsNotExist(err){
+					if _, err := os.Stat(mp3fname); os.IsNotExist(err) {
 						fmt.Println("Something went wrong during conversion: Mp3 file does not exist.")
 						return
 					}
 
 					//update db
 					err = ydata.YQueueUpdate(newid, ydata.STATUSDownloaded3, mp3fname)
-					if err != nil{
+					if err != nil {
 						log.Println(err)
 						return
 					}

@@ -25,14 +25,14 @@ func connect() (db *sql.DB, err error) {
 }
 
 // YQueueAdd adds a new video to the queue (db layer)
-func YQueueAdd(url string) (int, error) {
+func YQueueAdd(url string, who string) (int, error) {
 	db, err := connect()
 	if err != nil {
 		return -1, err
 	}
 	defer db.Close()
 	var id int
-	err = db.QueryRow("SELECT yqueue_ins($1)", url).Scan(&id)
+	err = db.QueryRow("SELECT yqueue_ins($1, $2)", url, who).Scan(&id)
 	if err != nil {
 		return -1, err
 	}
@@ -75,7 +75,7 @@ func YQueueGet(id int) (YQueue, error) {
 
 	var result = YQueue{}
 	err = db.QueryRow("select * from yqueue_get($1)", id).
-		Scan(&result.ID, &result.YTUrl, &result.Status, &result.File, &result.Lastupdate)
+		Scan(&result.ID, &result.YTUrl, &result.Status, &result.File, &result.Lastupdate, &result.Who)
 
 	if err != nil {
 		return YQueue{}, err
@@ -85,14 +85,14 @@ func YQueueGet(id int) (YQueue, error) {
 }
 
 //YQueueGetAll ...
-func YQueueGetAll(status int) ([]YQueue, error) {
+func YQueueGetAll(status int, who string) ([]YQueue, error) {
 	db, err := connect()
 	if err != nil {
 		return []YQueue{}, nil
 	}
 	defer db.Close()
 
-	rows, err := db.Query(fmt.Sprintf("select * from yqueue_get(null, %d)", status))
+	rows, err := db.Query(fmt.Sprintf("select * from yqueue_get(null, %d, '%s')", status, who))
 	if err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func YQueueGetAll(status int) ([]YQueue, error) {
 	result := make([]YQueue, 0)
 	for rows.Next() {
 		yq := YQueue{}
-		err := rows.Scan(&yq.ID, &yq.YTUrl, &yq.Status, &yq.File, &yq.Lastupdate)
+		err := rows.Scan(&yq.ID, &yq.YTUrl, &yq.Status, &yq.File, &yq.Lastupdate, &yq.Who)
 		if err != nil {
 			return nil, err
 		}
@@ -134,4 +134,5 @@ type YQueue struct {
 	Status     int
 	File       sql.NullString
 	Lastupdate sql.NullString
+	Who        sql.NullString
 }
