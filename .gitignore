@@ -20,3 +20,7 @@ teodor/
 debug
 execution-log
 ydl
+
+
+node_modules
+dist
