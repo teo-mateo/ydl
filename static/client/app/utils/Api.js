@@ -1,10 +1,10 @@
 var axios = require('axios');
 var path = require('path')
+var config = require('../../ydl.config.js')
 
 var Api = {
-    BaseURL: "localhost:8080", 
     GetUri: function(p, ...params){
-        var uri = path.join.apply(null, [Api.BaseURL, p].concat(params))
+        var uri = path.join.apply(null, [config.baseydlurl, p].concat(params))
         return "http://" + window.encodeURI(uri)
     }
 
