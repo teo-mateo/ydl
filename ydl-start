@@ -1,6 +1,10 @@
 #! /bin/bash
 
-cat static/client/dist/index_bundle.js | awk '{gsub(/localhost:8080/, "bardici.ro:8080")}1' | grep bardici.ro:8080
+
+# will replace dev config (localhost) with proper value 
+cd static/client/dist
+cat index_bundle.js | awk '{gsub(/localhost:8080/, "bardici.ro:8080")}1' > temp.js && mv temp.js index_bundle.js
+cd ../../..
 
 nohup ./ydl > execution-log &
 
