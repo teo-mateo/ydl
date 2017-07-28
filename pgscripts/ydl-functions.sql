@@ -64,15 +64,17 @@ ALTER FUNCTION public.yqueue_get(integer, integer, text)
 
 -- DROP FUNCTION public.yqueue_ins(text);
 
-CREATE OR REPLACE FUNCTION public.yqueue_ins(p_yturl text, p_who text)
+CREATE OR REPLACE FUNCTION public.yqueue_ins(
+    p_yturl text,
+    p_who text)
   RETURNS integer AS
 $BODY$
-	insert into yqueue (yturl, status, file, who) values (p_yturl, 1, null, p_who)
+	insert into yqueue (yturl, status, file, who, lastupdate) values (p_yturl, 1, null, p_who, now())
 	returning id
 $BODY$
   LANGUAGE sql VOLATILE
   COST 100;
-ALTER FUNCTION public.yqueue_ins(text)
+ALTER FUNCTION public.yqueue_ins(text, text)
   OWNER TO postgres;
 
 ----------
@@ -89,7 +91,8 @@ CREATE OR REPLACE FUNCTION public.yqueue_upd(
 $BODY$
 	update yqueue set 
 		status = case when p_status is null then status else p_status end, 
-		file = case when p_file is null then file else p_file end 
+		file = case when p_file is null then file else p_file end, 
+		lastupdate = now()
 	where id = p_id
 $BODY$
   LANGUAGE sql VOLATILE
@@ -98,5 +101,19 @@ ALTER FUNCTION public.yqueue_upd(integer, integer, text)
   OWNER TO postgres;
 
 
+----------
 
+-- Function: public.yqueue_get_users()
 
+-- DROP FUNCTION public.yqueue_get_users();
+
+CREATE OR REPLACE FUNCTION public.yqueue_get_users()
+  RETURNS TABLE(who text) AS
+$BODY$
+	select distinct who from yqueue where status = 3
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION public.yqueue_get_users()
+  OWNER TO postgres;

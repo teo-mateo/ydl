@@ -1,6 +1,8 @@
 package util
 
 import (
+	"log"
+	"net/http"
 	"os"
 )
 
@@ -10,4 +12,10 @@ func FileExists(file string) bool {
 		return false
 	}
 	return true
+}
+
+// HTTPError ...
+func SendHTTPError(w http.ResponseWriter, err error) {
+	log.Println(err.Error())
+	http.Error(w, err.Error(), http.StatusInternalServerError)
 }

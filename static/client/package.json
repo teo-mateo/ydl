@@ -1,25 +1,28 @@
 {
-  "name": "github-battle",
+  "name": "ydl",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --port 8081 --open",
+    "create": "webpack"
   },
+  "author": "teo",
+  "license": "ISC",
   "babel": {
     "presets": [
       "env",
       "react"
     ]
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "axios": "^0.16.2",
+    "material-ui": "^0.18.7",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-router-dom": "^4.1.2"
+    "react-router-dom": "^4.1.2",
+    "react-tap-event-plugin": "^2.0.1"
   },
   "devDependencies": {
     "babel-core": "^6.25.0",

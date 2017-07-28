@@ -92,7 +92,14 @@ func YQueueGetAll(status int, who string) ([]YQueue, error) {
 	}
 	defer db.Close()
 
-	rows, err := db.Query(fmt.Sprintf("select * from yqueue_get(null, %d, '%s')", status, who))
+	query := ""
+	if who == "" {
+		query = fmt.Sprintf("select * from yqueue_get(null, %d, NULL)", status)
+	} else {
+		query = fmt.Sprintf("select * from yqueue_get(null, %d, '%s')", status, who)
+	}
+
+	rows, err := db.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -125,6 +132,31 @@ func YQueueDelete(id int) error {
 	}
 
 	return nil
+}
+
+func YQueueGetUsers() ([]string, error) {
+	db, err := connect()
+	if err != nil {
+		return nil, err
+	}
+
+	defer db.Close()
+
+	rows, err := db.Query("select * from yqueue_get_users()")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	result := make([]string, 0)
+	for rows.Next() {
+		user := ""
+		err := rows.Scan(&user)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, user)
+	}
+	return result, nil
 }
 
 // YQueue ...
