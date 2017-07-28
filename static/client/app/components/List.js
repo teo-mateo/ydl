@@ -9,6 +9,8 @@ import {
     TableRowColumn
 } from 'material-ui/Table'
 import RaisedButton from 'material-ui/RaisedButton';
+import IconButton from 'material-ui/IconButton';
+import FileCloudDownload from 'material-ui/svg-icons/file/cloud-download';
 import PropTypes from 'prop-types'
 
 var Api = require('../utils/Api')
@@ -23,7 +25,9 @@ function SingleRow(props){
             <TableRowColumn>{props.song.File.String}</TableRowColumn>
             <TableRowColumn>
                 <a href={dlurl+props.song.ID}>
-                    <RaisedButton label='Download' />
+                    <IconButton>
+                        <FileCloudDownload />
+                    </IconButton>
                 </a>
             </TableRowColumn>
         </TableRow>
@@ -40,12 +44,11 @@ class List extends React.Component{
                 fixedFooter: true,
                 stripedRows: true,
                 showRowHover: true,
-                selectable: true,
+                selectable: false,
                 multiSelectable: false,
-                enableSelectAll: true,
+                enableSelectAll: false,
                 deselectOnClickaway: true,
-                showCheckboxes: true,
-                height: '800px',
+                showCheckboxes: false
             }
         }
 
@@ -91,9 +94,9 @@ class List extends React.Component{
                     adjustForCheckbox={settings.showCheckboxes}
                     enableSelectAll={settings.enableSelectAll}>
                     <TableRow>
-                        <TableHeaderColumn>ID</TableHeaderColumn>
-                        <TableHeaderColumn>USER</TableHeaderColumn>
-                        <TableHeaderColumn>FILE</TableHeaderColumn>
+                        <TableHeaderColumn></TableHeaderColumn>
+                        <TableHeaderColumn></TableHeaderColumn>
+                        <TableHeaderColumn></TableHeaderColumn>
                     </TableRow>
                 </TableHeader>
                 <TableBody
