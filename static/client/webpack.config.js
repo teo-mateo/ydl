@@ -1,6 +1,7 @@
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+var Webpack = require('webpack');
 
 var exps = {
 	entry: './app/index.js', 
@@ -25,7 +26,12 @@ var exps = {
 		new UglifyJsPlugin({
 			minimize: true,
 			extractComments: true
-		})
+		}),
+		new Webpack.DefinePlugin({
+			'process.env': {
+			'NODE_ENV': JSON.stringify('production')
+			}
+		})		
 	], 
 	//devtool: 'eval-source-map'
 }
