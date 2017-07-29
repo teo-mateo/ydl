@@ -16,6 +16,7 @@
 # needs only to exist on srv
 pull.sh
 
+tmp/
 ami/
 andreea/
 teo/

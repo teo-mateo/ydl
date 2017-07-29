@@ -16,15 +16,15 @@ func main() {
 	fmt.Println("PG Conn: " + ydlconf.PgConnectionString())
 	fmt.Println("Will convert to mp3")
 
-	http.HandleFunc("/", handlers.RootHandler)
 	http.HandleFunc("/users", handlers.UsersHandler)
 	http.HandleFunc("/ydl", handlers.QueueHandler)
 	http.HandleFunc("/list/", handlers.ListHandler)
 	http.HandleFunc("/list/json/", handlers.ListJSONPerUser)
 	http.HandleFunc("/download", handlers.DownloadHandler)
-	http.HandleFunc("/multidownload/", handlers.MultiDownloadHandler)
+	http.HandleFunc("/multidownload", handlers.MultiDownloadHandler)
 	http.HandleFunc("/delete", handlers.DeleteHandler)
 	http.HandleFunc("/static/", handlers.StaticFilesHandler)
+	http.HandleFunc("/", handlers.RootHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

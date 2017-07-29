@@ -19,7 +19,7 @@ class MultiActions extends React.Component{
         return (
             <div>
                 <span>{ this.props.selectedSongs.length} songs selected</span>
-                <a href={"http://" + window.location.host + "/multidownload/?ids="+this.props.selectedSongs.join(",")} target="_blank">
+                <a href={"http://" + window.location.host + "/multidownload?ids="+this.props.selectedSongs.join(",")} target="_blank">
                     <IconButton disabled={hasSelection ? false : true}>
                         <FileCloudDownload />
                     </IconButton>
