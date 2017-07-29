@@ -24,7 +24,7 @@ func main() {
 	http.HandleFunc("/multidownload", handlers.MultiDownloadHandler)
 	http.HandleFunc("/delete", handlers.DeleteHandler)
 	http.HandleFunc("/static/", handlers.StaticFilesHandler)
-	http.HandleFunc("/", handlers.RootHandler)
+	http.HandleFunc("/app", handlers.RootHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
