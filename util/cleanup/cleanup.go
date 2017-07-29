@@ -25,6 +25,7 @@ func StartCleanupRoutine() {
 
 func MarkForCleanup(file string, delay time.Duration) {
 	go func() {
+		fmt.Printf("will sleep for %f seconds, then delete %s\n", delay.Seconds(), file)
 		time.Sleep(delay)
 		cleanupQueue <- file
 	}()
