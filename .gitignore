@@ -13,6 +13,9 @@
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+# needs only to exist on srv
+pull.sh
+
 ami/
 andreea/
 teo/
