@@ -1,7 +1,8 @@
 var path = require('path');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-module.exports = {
+var exps = {
 	entry: './app/index.js', 
 	output: {
 		path: path.resolve(__dirname, 'dist'),
@@ -17,8 +18,16 @@ module.exports = {
 	devServer: {
 		historyApiFallback: true
 	},
-	plugins: [new HtmlWebpackPlugin({
-		template: 'app/index.html'
-	})], 
-	devtool: 'eval-source-map'
+	plugins: [
+		new HtmlWebpackPlugin({
+			template: 'app/index.html'
+		}), 
+		new UglifyJsPlugin({
+			minimize: true,
+			extractComments: true
+		})
+	], 
+	//devtool: 'eval-source-map'
 }
+
+module.exports = exps;

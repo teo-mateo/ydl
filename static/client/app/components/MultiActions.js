@@ -19,16 +19,17 @@ class MultiActions extends React.Component{
         return (
             <div>
                 <span>{ this.props.selectedSongs.length} songs selected</span>
-                <a href={"http://" + window.location.host + "/multidownload?ids="+this.props.selectedSongs.join(",")} target="_blank">
-                    <IconButton disabled={hasSelection ? false : true}>
+                <IconButton 
+                    disabled={hasSelection ? false : true}
+                    onClick={() => {
+                        var multiDlUrl = "http://" + window.location.host + "/multidownload?ids="+this.props.selectedSongs.join(",");
+                        window.open(multiDlUrl, "_blank");
+                        }}>
                         <FileCloudDownload />
-                    </IconButton>
-                </a>                                    
-                <a href='#'>
+                    </IconButton>                             
                     <IconButton disabled={hasSelection ? false : true}>
                         <ActionsDelete />
                     </IconButton>
-                </a>      
                 <div>
                     
                 </div>                                           

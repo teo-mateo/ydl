@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --port 8081 --open",
-    "create": "webpack --progress --optimize-minimize"
+    "create": "webpack --progress"
   },
   "author": "teo",
   "license": "ISC",
@@ -32,6 +32,8 @@
     "css-loader": "^0.28.4",
     "html-webpack-plugin": "^2.29.0",
     "style-loader": "^0.18.2",
+    "uglify-js": "^3.0.26",
+    "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.4.1",
     "webpack-dev-server": "^2.6.1"
   }
