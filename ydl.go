@@ -22,6 +22,7 @@ func main() {
 	http.HandleFunc("/list/", handlers.ListHandler)
 	http.HandleFunc("/list/json/", handlers.ListJSONPerUser)
 	http.HandleFunc("/download", handlers.DownloadHandler)
+	http.HandleFunc("/multidownload", handlers.MultiDownloadHandler)
 	http.HandleFunc("/delete", handlers.DeleteHandler)
 	http.HandleFunc("/static/", handlers.StaticFilesHandler)
 

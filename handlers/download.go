@@ -9,6 +9,7 @@ import (
 
 	"github.com/teo-mateo/ydl/util"
 	ydata "github.com/teo-mateo/ydl/ydata"
+	"strings"
 )
 
 // DownloadHandler ...
@@ -40,4 +41,38 @@ func DownloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/mp3")
 	w.Header().Set("Content-Disposition", "attachment; filename="+shortname)
 	http.ServeFile(w, r, result.File.String)
+}
+
+func MultiDownloadHandler(w http.ResponseWriter, r *http.Request) {
+	//get ids from url
+	idsParam := r.URL.Query().Get("ids")
+	ids := strings.Split(idsParam, ",")
+
+	files := make([]string, 0)
+
+	for _, x := range ids {
+		id, err := strconv.Atoi(x)
+		if err != nil {
+			util.SendHTTPError(w, err)
+			return
+		}
+		song, err := ydata.YQueueGet(id)
+		if err != nil {
+			util.SendHTTPError(w, err)
+		}
+
+		files = append(files, song.File.String)
+	}
+
+	zipFile, err := util.Zip(files)
+	if err != nil {
+		util.SendHTTPError(w, err)
+		return
+	}
+
+	_, shortname := filepath.Split(zipFile)
+	fmt.Println("Serving file: " + shortname)
+	w.Header().Set("Content-type", "application/zip")
+	w.Header().Set("Content-Disposition", "attachment; filename="+shortname)
+	http.ServeFile(w, r, zipFile)
 }

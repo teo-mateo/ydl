@@ -13,13 +13,9 @@ import IconButton from 'material-ui/IconButton';
 import FileCloudDownload from 'material-ui/svg-icons/file/cloud-download';
 import LinearProgress from 'material-ui/LinearProgress';
 
-
-
-
 import PropTypes from 'prop-types'
 
 var Api = require('../utils/Api')
-
 
 class List extends React.Component{
     constructor(){
@@ -30,8 +26,6 @@ class List extends React.Component{
         }
 
         console.log(this.state);
-
-        //this.load = this.load.bind(this);
     }
 
     componentDidMount(){
@@ -131,8 +125,11 @@ class List extends React.Component{
         if (this.state.files != null && this.state.files.length > 0){
             return (
                 <div>
+                    <span>
+                        {this.props.blabla}
+                    </span>
                     <LinearProgress mode="indeterminate" style={loaderStyle}/>
-                    <Table selectable={true} multiSelectable={true}
+                    <Table selectable={true} multiSelectable={true} 
                         style={{tableLayout: 'auto', padding: '0 !important'}} 
                         onRowSelection={this.onRowSelection.bind(this)}>
                         <TableHeader>
@@ -142,7 +139,8 @@ class List extends React.Component{
                                 <TableHeaderColumn></TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
-                        <TableBody 
+                        <TableBody
+                            deselectOnClickaway={false}
                             stripedRows={false}
                             showRowHover={true}
                             displayRowCheckbox={true}>
@@ -187,7 +185,8 @@ class List extends React.Component{
 List.propTypes = {
     selectedUser: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
-    selectedSongs: PropTypes.array.isRequired
+    selectedSongs: PropTypes.array.isRequired,
+    blabla: PropTypes.string.isRequired
 }
 
 module.exports = List;

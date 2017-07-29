@@ -37,8 +37,11 @@ class App extends React.Component{
 
   onSelectUser(user){
     console.log("App knows new user selection: " + user);
-    this.setState({
-      selectedUser: user
+    this.setState(() => {
+      return {
+        selectedUser: user, 
+        selectedSongs: []
+      }   
     });
   }
 
@@ -62,6 +65,7 @@ class App extends React.Component{
 
   render(){
     var a= 2;
+
     return (
       <MuiThemeProvider>
         <div>
@@ -75,8 +79,6 @@ class App extends React.Component{
               <MultiActions  selectedSongs={this.state.selectedSongs}/>
             </div>              
           </div>
-
-          {/* <TestTable /> */}
 
            <List 
             selectedUser={this.state.selectedUser} 

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 )
 
@@ -30,6 +31,16 @@ func PgPort() int {
 // PgDb ...
 func PgDb() string {
 	return "postgres"
+}
+
+// TempFolder ...
+func TempFolder() (string, error) {
+	cwd, error := os.Getwd()
+	if error != nil {
+		return "", error
+	}
+
+	return filepath.Join(cwd, "tmp"), nil
 }
 
 // PgConnectionString ...
