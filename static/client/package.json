@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --port 8081 --open",
-    "create": "webpack"
+    "create": "webpack --progress --optimize-minimize"
   },
   "author": "teo",
   "license": "ISC",
