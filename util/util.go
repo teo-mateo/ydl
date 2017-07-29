@@ -39,7 +39,8 @@ func Zip(files []string) (string, error) {
 	}
 
 	//generate zip file name
-	zipFileName := fmt.Sprintf("ydl-%s.zip", time.Now().Format("20060102150405"))
+
+	zipFileName := fmt.Sprintf("ydl-%s.zip", time.Now().Format("20060102150405.999"))
 	fmt.Println("generating temp zip file: ", zipFileName)
 	tempDir, err := config.TempFolder()
 	if err != nil {

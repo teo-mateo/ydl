@@ -8,8 +8,10 @@ import (
 	"strconv"
 
 	"github.com/teo-mateo/ydl/util"
+	"github.com/teo-mateo/ydl/util/cleanup"
 	ydata "github.com/teo-mateo/ydl/ydata"
 	"strings"
+	"time"
 )
 
 // DownloadHandler ...
@@ -75,4 +77,7 @@ func MultiDownloadHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-type", "application/zip")
 	w.Header().Set("Content-Disposition", "attachment; filename="+shortname)
 	http.ServeFile(w, r, zipFile)
+
+	//will be deleted after N seconds
+	cleanup.MarkForCleanup(zipFile, time.Second*60*10)
 }

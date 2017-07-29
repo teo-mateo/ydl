@@ -9,12 +9,15 @@ import (
 
 	ydlconf "github.com/teo-mateo/ydl/config"
 	"github.com/teo-mateo/ydl/handlers"
+	"github.com/teo-mateo/ydl/util/cleanup"
 )
 
 func main() {
 	fmt.Println("Starting YDL, port 8080.")
 	fmt.Println("PG Conn: " + ydlconf.PgConnectionString())
 	fmt.Println("Will convert to mp3")
+
+	cleanup.StartCleanupRoutine()
 
 	http.HandleFunc("/users", handlers.UsersHandler)
 	http.HandleFunc("/ydl", handlers.QueueHandler)
