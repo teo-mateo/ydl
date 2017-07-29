@@ -1,5 +1,7 @@
 #! /bin/bash
 
+killall ydl
+go build ydl.go
 
 # will replace dev config (localhost) with proper value 
 cd static/client/dist
