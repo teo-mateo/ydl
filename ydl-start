@@ -1,5 +1,12 @@
 #! /bin/bash
 
+#cleanup tmp/
+if [ -d tmp ]; 
+	then 
+		rm tmp/*; 
+	fi
+
+
 killall ydl
 go build ydl.go
 
