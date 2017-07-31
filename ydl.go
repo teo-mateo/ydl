@@ -19,6 +19,7 @@ func main() {
 
 	cleanup.StartCleanupRoutine()
 
+	http.HandleFunc("/", handlers.RootHandler)
 	http.HandleFunc("/users", handlers.UsersHandler)
 	http.HandleFunc("/ydl", handlers.QueueHandler)
 	http.HandleFunc("/list/", handlers.ListHandler)
