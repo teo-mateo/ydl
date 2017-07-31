@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"runtime/debug"
 
 	"github.com/teo-mateo/ydl/config"
 )
@@ -25,6 +26,7 @@ func FileExists(file string) bool {
 // SendHTTPError ...
 func SendHTTPError(w http.ResponseWriter, err error) {
 	log.Println(err.Error())
+	debug.PrintStack()
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 

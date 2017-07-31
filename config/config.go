@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -45,5 +44,7 @@ func TempFolder() (string, error) {
 
 // PgConnectionString ...
 func PgConnectionString() string {
-	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", PgHost(), PgPort(), PgUser(), PgPassword(), PgDb())
+	connString := os.Getenv("PG_CN")
+	return connString
+	//return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", PgHost(), PgPort(), PgUser(), PgPassword(), PgDb())
 }

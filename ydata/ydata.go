@@ -25,14 +25,14 @@ func connect() (db *sql.DB, err error) {
 }
 
 // YQueueAdd adds a new video to the queue (db layer)
-func YQueueAdd(url string, who string) (int, error) {
+func YQueueAdd(url string, key string, who string) (int, error) {
 	db, err := connect()
 	if err != nil {
 		return -1, err
 	}
 	defer db.Close()
 	var id int
-	err = db.QueryRow("SELECT yqueue_ins($1, $2)", url, who).Scan(&id)
+	err = db.QueryRow("SELECT yqueue_ins($1, $2, $3)", url, key, who).Scan(&id)
 	if err != nil {
 		return -1, err
 	}
@@ -75,7 +75,7 @@ func YQueueGet(id int) (YQueue, error) {
 
 	var result = YQueue{}
 	err = db.QueryRow("select * from yqueue_get($1)", id).
-		Scan(&result.ID, &result.YTUrl, &result.Status, &result.File, &result.Lastupdate, &result.Who)
+		Scan(&result.ID, &result.YTUrl, &result.Status, &result.File, &result.LastUpdate, &result.Who, &result.YTKey)
 
 	if err != nil {
 		return YQueue{}, err
@@ -108,7 +108,7 @@ func YQueueGetAll(status int, who string) ([]YQueue, error) {
 	result := make([]YQueue, 0)
 	for rows.Next() {
 		yq := YQueue{}
-		err := rows.Scan(&yq.ID, &yq.YTUrl, &yq.Status, &yq.File, &yq.Lastupdate, &yq.Who)
+		err := rows.Scan(&yq.ID, &yq.YTUrl, &yq.Status, &yq.File, &yq.LastUpdate, &yq.Who, &yq.YTKey)
 		if err != nil {
 			return nil, err
 		}
@@ -163,8 +163,16 @@ func YQueueGetUsers() ([]string, error) {
 type YQueue struct {
 	ID         int
 	YTUrl      string
+	YTKey	   sql.NullString
 	Status     int
 	File       sql.NullString
-	Lastupdate sql.NullString
+	LastUpdate sql.NullString
 	Who        sql.NullString
+	FileSize  int64
+	WhenDownloaded string
+	FileName	string
+}
+
+func (yq *YQueue) SetFileSize(fileSize int64){
+	yq.FileSize = fileSize
 }

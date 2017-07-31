@@ -11,11 +11,13 @@ import (
 
 	"os/exec"
 	"strings"
+	"net/url"
 
 	//...
 	_ "github.com/lib/pq"
 	"github.com/rylio/ytdl"
 	"github.com/teo-mateo/ydl/ydata"
+	"errors"
 )
 
 // QueueHandler ...
@@ -36,9 +38,18 @@ func QueueHandler(w http.ResponseWriter, r *http.Request) {
 	queueNewDL(v, who)
 }
 
-func queueNewDL(url string, who string) error {
+func queueNewDL(videoUrl string, who string) error {
+	url, err := url.Parse(videoUrl)
+	if err != nil{
+		return err
+	}
 
-	id, err := ydata.YQueueAdd(url, who)
+	key := url.Query().Get("v")
+	if key == ""{
+		return errors.New(fmt.Sprintf("Could not find youtube video key in url: %s", videoUrl))
+	}
+
+	id, err := ydata.YQueueAdd(videoUrl, key, who)
 	if err != nil {
 		fmt.Println(err)
 	}

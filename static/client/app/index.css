@@ -12,3 +12,8 @@ body {
 .flex-item {
     margin: 1px;
 }
+
+.videothumb{
+    width: 50px;
+    height: 40px;
+}

@@ -23,17 +23,17 @@ var exps = {
 		new HtmlWebpackPlugin({
 			template: 'app/index.html'
 		}), 
-		new UglifyJsPlugin({
-			minimize: true,
-			extractComments: true
-		}),
-		new Webpack.DefinePlugin({
-			'process.env': {
-			'NODE_ENV': JSON.stringify('production')
-			}
-		})		
+		// new UglifyJsPlugin({
+		// 	minimize: true,
+		// 	extractComments: true
+		// }),
+		// new Webpack.DefinePlugin({
+		// 	'process.env': {
+		// 	'NODE_ENV': JSON.stringify('production')
+		// 	}
+		// })		
 	], 
-	//devtool: 'eval-source-map'
+	devtool: 'eval-source-map'
 }
 
 module.exports = exps;

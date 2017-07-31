@@ -9,6 +9,7 @@ import (
 
 	"github.com/teo-mateo/ydl/util"
 	"github.com/teo-mateo/ydl/ydata"
+	"os"
 )
 
 // ListHandler ...
@@ -46,6 +47,18 @@ func ListJSONPerUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	for i := 0; i < len(records); i++{
+		if records[i].File.Valid{
+			info, err := os.Stat(records[i].File.String)
+			if err != nil{
+				util.SendHTTPError(w, err)
+				return
+			}
+			records[i].FileSize = info.Size()
+			records[i].FileName = info.Name()
+		}
 	}
 
 	jsonBytes, err := json.Marshal(records)

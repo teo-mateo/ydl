@@ -1,1 +1,0 @@
-ALTER TABLE yqueue ADD COLUMN who text;

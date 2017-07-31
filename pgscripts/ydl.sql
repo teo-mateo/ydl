@@ -17,6 +17,7 @@ CREATE TABLE public.yqueue
   status integer NOT NULL,
   file text,
   lastupdate timestamp with time zone,
+  who text,
   CONSTRAINT queue_pkey PRIMARY KEY (id)
 )
 WITH (
@@ -41,3 +42,6 @@ ALTER TABLE public.ystatus
   OWNER TO postgres;
 
 
+----------
+
+alter table public.yqueue add column ytkey text

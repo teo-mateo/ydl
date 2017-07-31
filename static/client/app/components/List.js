@@ -1,4 +1,5 @@
 var React = require('react');
+var numeral = require('numeral');
 
 import {
     Table,
@@ -137,6 +138,7 @@ class List extends React.Component{
                                 <TableHeaderColumn></TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
                                 <TableHeaderColumn></TableHeaderColumn>
+                                <TableHeaderColumn></TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -152,9 +154,36 @@ class List extends React.Component{
                                             style={myPaddingStyle} 
                                             key={song.ID}
                                             selected={song.isSelected}>
-                                            <TableRowColumn>{song.ID}</TableRowColumn>
-                                            <TableRowColumn>{song.Who.String}</TableRowColumn>
-                                            <TableRowColumn>{song.File.String}</TableRowColumn>
+                                            <TableRowColumn style={{width: "50px"}}>
+                                                {(song.YTKey.Valid) 
+                                                    ? (
+                                                        <a href={"https://www.youtube.com/watch?v="+song.YTKey.String} 
+                                                            target="_blank">
+                                                            <img 
+                                                                src={"https://img.youtube.com/vi/"+song.YTKey.String+"/0.jpg"} 
+                                                                className="videothumb" alt="Play on YouTube"
+                                                                /> 
+                                                        </a>
+                                                    )
+                                                    : (
+                                                        <img src="https://img.youtube.com/" className="videothumb" />
+                                                    )}
+
+                                            </TableRowColumn>
+                                            <TableRowColumn style={{width: "50px"}}>{song.Who.String}</TableRowColumn>
+                                            <TableRowColumn>
+                                                
+                                                <div>{song.FileName}</div>
+                                                <div style={{
+                                                    fontSize: 10,
+                                                    color: "gray"
+                                                }}
+                                                >
+                                                    <div style={{marginTop: 5}}>
+                                                        {numeral(song.FileSize / (1024*1024)).format('0.0') + "MB"} 
+                                                    </div>
+                                                </div>
+                                            </TableRowColumn>
                                             <TableRowColumn>
                                                 <a href={dlurl+song.ID}>
                                                     <IconButton>

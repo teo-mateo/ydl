@@ -7,7 +7,7 @@ class Search extends React.Component{
 
     render(){
         return (
-            <div>[Search]</div>
+            <div>[Todo Search]</div>
         )
     }
 }

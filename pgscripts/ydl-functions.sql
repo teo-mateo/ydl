@@ -65,15 +65,16 @@ ALTER FUNCTION public.yqueue_get(integer, integer, text)
 -- DROP FUNCTION public.yqueue_ins(text);
 
 CREATE OR REPLACE FUNCTION public.yqueue_ins(
-    p_yturl text,
-    p_who text)
-  RETURNS integer AS
-$BODY$
-	insert into yqueue (yturl, status, file, who, lastupdate) values (p_yturl, 1, null, p_who, now())
-	returning id
-$BODY$
-  LANGUAGE sql VOLATILE
-  COST 100;
+  p_yturl text,
+  p_ytkey text,
+  p_who text)
+  RETURNS integer
+LANGUAGE 'sql'
+AS $BODY$
+  insert into yqueue (yturl, ytkey, status, file, who, lastupdate) values (p_yturl, p_ytkey, 1, null, p_who, now())
+  returning id
+$BODY$;
+
 ALTER FUNCTION public.yqueue_ins(text, text)
   OWNER TO postgres;
 
