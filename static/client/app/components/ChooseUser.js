@@ -4,6 +4,7 @@ import Api from '../utils/Api'
 import DropDownMenu from 'material-ui/DropDownMenu';
 import MenuItem from 'material-ui/MenuItem';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 
 const styles = {
   customWidth: {
@@ -15,7 +16,6 @@ class ChooseUser extends React.Component{
     constructor(){
         super()
         this.state = {
-            selectedUser: "",
             users: [""]
         }
     }
@@ -29,16 +29,12 @@ class ChooseUser extends React.Component{
     }
 
     handleMenuChange (event, index, value) {
-        console.log("in handleMenuChange(), value is " + (value === "" ? "<All>" : value))
-        this.setState({
-            selectedUser: value
-        });
-        this.props.onSelect(value);
+        this.props.history.push('/users/'+value)
     }
 
     render(){
         return (
-                <DropDownMenu value={this.state.selectedUser} onChange={this.handleMenuChange.bind(this)}>
+                <DropDownMenu value={this.props.selectedUser} onChange={this.handleMenuChange.bind(this)}>
                     <MenuItem value="" primaryText="All users" />
                     {
                         this.state.users.map(function(u){
@@ -51,7 +47,7 @@ class ChooseUser extends React.Component{
 }
 
 ChooseUser.propTypes = {
-    onSelect: PropTypes.func.isRequired
+    selectedUser: PropTypes.string.isRequired
 }
 
-module.exports = ChooseUser
+module.exports = withRouter(ChooseUser)

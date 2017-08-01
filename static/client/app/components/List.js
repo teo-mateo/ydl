@@ -29,12 +29,16 @@ class List extends React.Component{
         console.log(this.state);
     }
 
-    componentDidMount(){
-        Api.GetList(this.props.selectedUser)
+    loadSongs(user){
+        Api.GetList(user)
             .then(songs => {
                 songs.forEach(function(s){ s.isSelected=false;});
                 this.setState({ files: songs, loading: false })
         });
+    }
+
+    componentDidMount(){
+        this.loadSongs(this.props.selectedUser)
     }
 
     componentDidUpdate(){
@@ -52,34 +56,37 @@ class List extends React.Component{
             return { files: [], loading: true}
         });
 
-        console.log("List.componentWillReceiveProps()")
-        Api.GetList(nextProps.selectedUser)
-            .then(songs => {
-                songs.forEach(function(s){ s.isSelected=false;});
-                this.setState({ files: songs, loading: false })
-        });        
+        this.loadSongs(nextProps.selectedUser);      
     }
 
     onRowSelection(rows){
 
-        // this.setState(() =>{
-        //     return {
-        //         files: this.state.files
-        //     }
-        // })
-
         if (rows === "all"){
             //change state: select all
-            this.setState(() => {
-                // var newState = {
-                //     files: this.state.files.map(f => {
-                //         f.isSelected = true;
-                //         return f;
-                //     })
-                // };
-                // return newState;
-            });
-            this.props.onSelect(this.state.files.map(f => f.ID ));
+            // this.setState(() => {
+            //     var newState = {
+            //         files: this.state.files.map(f => {
+            //             f.isSelected = true;
+            //             return f;
+            //         })
+            //     };
+            //     return newState;
+            // });
+
+            var newState = {
+                files: this.state.files.map(f => {
+                    f.isSelected = true;
+                    return f;
+                })
+            };         
+            this.setState(newState);   
+
+            var selectedFiles = this.state.files.map(f => ({
+                id: f.ID,
+                size: f.FileSize
+            }));
+            this.props.onSelect(selectedFiles);
+
         } else if (rows === "none" || rows.length == 0){
             //change state: select none
             this.setState(() =>{
@@ -91,23 +98,32 @@ class List extends React.Component{
                 };
                 return newState;
             });
-            this.props.onSelect([]);
+
+            var selectedFiles = [];
+            this.props.onSelect(selectedFiles);
         } else {
+
             //rows has the indexes of the selected rows
-            var rows = rows.map((x) =>{ return this.state.files[x].ID;});
+            var selectedFiles = rows.map((x) => ({ 
+                id: this.state.files[x].ID,
+                size: this.state.files[x].FileSize
+            }));
+
+
+            this.props.onSelect(selectedFiles);
 
             this.setState(() =>{
                 var newState = {
                     files: this.state.files
                         .map(f => {
-                            f.isSelected = (rows.indexOf(f.ID) >= 0)
+                            var shouldBeSelected = selectedFiles.filter(x => x.id == f.ID).length > 0; 
+                            f.isSelected = shouldBeSelected;
                             return f;
                         })
 
                 };
                 return newState;
-            });
-            this.props.onSelect(rows);
+            });            
         }
     }
 
@@ -126,9 +142,6 @@ class List extends React.Component{
         if (this.state.files != null && this.state.files.length > 0){
             return (
                 <div>
-                    <span>
-                        {this.props.blabla}
-                    </span>
                     <LinearProgress mode="indeterminate" style={loaderStyle}/>
                     <Table selectable={true} multiSelectable={true} 
                         style={{tableLayout: 'auto', padding: '0 !important'}} 
@@ -173,12 +186,11 @@ class List extends React.Component{
                                             <TableRowColumn style={{width: "50px"}}>{song.Who.String}</TableRowColumn>
                                             <TableRowColumn>
                                                 
-                                                <div>{song.FileName}</div>
+                                                <div><a href={dlurl+song.ID}>{song.FileName}</a></div>
                                                 <div style={{
-                                                    fontSize: 10,
-                                                    color: "gray"
-                                                }}
-                                                >
+                                                        fontSize: 10,
+                                                        color: "gray"
+                                                    }}>
                                                     <div style={{marginTop: 5}}>
                                                         {numeral(song.FileSize / (1024*1024)).format('0.0') + "MB"} 
                                                     </div>
@@ -214,8 +226,7 @@ class List extends React.Component{
 List.propTypes = {
     selectedUser: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
-    selectedSongs: PropTypes.array.isRequired,
-    blabla: PropTypes.string.isRequired
+    selectedSongs: PropTypes.array.isRequired
 }
 
 module.exports = List;

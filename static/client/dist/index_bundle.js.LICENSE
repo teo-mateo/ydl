@@ -19,18 +19,18 @@ object-assign
  * @license Modernizr 3.0.0pre (Custom Build) | MIT
  */
 
-/*!
- * Bowser - a browser detector
- * https://github.com/ded/bowser
- * MIT License | (c) Dustin Diaz 2015
- */
-
 /*! @preserve
  * numeral.js
  * version : 2.0.6
  * author : Adam Draper
  * license : MIT
  * http://adamwdraper.github.com/Numeral-js/
+ */
+
+/*!
+ * Bowser - a browser detector
+ * https://github.com/ded/bowser
+ * MIT License | (c) Dustin Diaz 2015
  */
 
 /*!

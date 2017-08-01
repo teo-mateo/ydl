@@ -13,9 +13,12 @@ import AppBar from 'material-ui/AppBar';
 import Header from './Header';
 import MultiActions from './MultiActions';
 
-import List from './List';
-import ChooseUser from './ChooseUser';
-import TestTable from './tests/TestTable';
+import Main from './Main';
+
+var ReactRouter = require('react-router-dom');
+var Router = ReactRouter.HashRouter;
+var Route = ReactRouter.Route;
+var Switch = ReactRouter.Switch;
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -35,60 +38,42 @@ class App extends React.Component{
     }
   }
 
-  onSelectUser(user){
-    console.log("App knows new user selection: " + user);
-    this.setState(() => {
-      return {
-        selectedUser: user, 
-        selectedSongs: []
-      }   
-    });
+  renderMain({match}){
+    return (
+      <Main selectedUser={match.params.selectedUser || ""} />
+    )
   }
-
-  onSelectSongs(songs){
-    console.log("App knows new song selection: " + songs)
-    this.setState(() => {
-      return {
-        selectedSongs: songs, 
-        selectedUser: this.state.selectedUser
-      }
-    });
-  }
-
-  // shouldComponentUpdate(nextProps, nextState){
-  //   if (this.state.selectedUser !== nextState.selectedUser){
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
 
   render(){
-    var a= 2;
-
     return (
       <MuiThemeProvider>
         <div>
           <AppBar title={<Header />}/>
-  
-          <div className="flex-container">
-            <div className="flex-item">
-              <ChooseUser onSelect={this.onSelectUser.bind(this)}/>
-            </div>
-            <div className="flex-item">    
-              <MultiActions  selectedSongs={this.state.selectedSongs}/>
-            </div>              
-          </div>
 
-           <List 
-            selectedUser={this.state.selectedUser} 
-            onSelect={this.onSelectSongs.bind(this)}
-            selectedSongs={this.state.selectedSongs}
-            /> 
+          <Router>
+            <Switch>
+              <Route path='/' exact render={this.renderMain}>
+              </Route>
+              <Route path='/users/:selectedUser?' render={this.renderMain} />
+                    
+            </Switch>
+          </Router>
         </div>
       </MuiThemeProvider>
     );
   }
 }
 
-module.exports = App;
+class Root extends React.Component{
+  constructor(){
+    super()
+  }
+
+  render(){
+    return (
+      <div>ROOT </div>
+    )
+  }
+}
+
+module.exports = App; 
