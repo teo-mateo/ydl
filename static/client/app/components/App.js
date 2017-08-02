@@ -52,10 +52,8 @@ class App extends React.Component{
 
           <Router>
             <Switch>
-              <Route path='/' exact render={this.renderMain}>
-              </Route>
+              <Route path='/' exact render={this.renderMain} />
               <Route path='/users/:selectedUser?' render={this.renderMain} />
-                    
             </Switch>
           </Router>
         </div>

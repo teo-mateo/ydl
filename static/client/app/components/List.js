@@ -14,17 +14,24 @@ import IconButton from 'material-ui/IconButton';
 import FileCloudDownload from 'material-ui/svg-icons/file/cloud-download';
 import LinearProgress from 'material-ui/LinearProgress';
 
-import PropTypes from 'prop-types'
-
-var Api = require('../utils/Api')
+import PropTypes from 'prop-types';
+import Pagination from './Pagination';
+import Api from '../utils/Api';
 
 class List extends React.Component{
     constructor(){
         super()
         this.state = {
+            allfiles:[],
             files: [], 
-            loading:true
+            loading:true,
+            paging: {
+                page: 1,
+                pageSize:5
+            }
         }
+
+        this.gotoPage = this.gotoPage.bind(this);
 
         console.log(this.state);
     }
@@ -33,7 +40,10 @@ class List extends React.Component{
         Api.GetList(user)
             .then(songs => {
                 songs.forEach(function(s){ s.isSelected=false;});
-                this.setState({ files: songs, loading: false })
+                this.setState({ 
+                    allfiles: songs,
+                    files: songs, 
+                    loading: false })
         });
     }
 
@@ -52,27 +62,17 @@ class List extends React.Component{
             return;
 
         //parent will show loader
-        this.setState(() => {
-            return { files: [], loading: true}
+        this.setState({
+            allfiles: [], 
+            files: [], 
+            loading: true
         });
 
         this.loadSongs(nextProps.selectedUser);      
     }
 
     onRowSelection(rows){
-
         if (rows === "all"){
-            //change state: select all
-            // this.setState(() => {
-            //     var newState = {
-            //         files: this.state.files.map(f => {
-            //             f.isSelected = true;
-            //             return f;
-            //         })
-            //     };
-            //     return newState;
-            // });
-
             var newState = {
                 files: this.state.files.map(f => {
                     f.isSelected = true;
@@ -127,6 +127,31 @@ class List extends React.Component{
         }
     }
 
+
+    btnSkip_Click(){
+        this.gotoPage(this.state.paging.page+1);  
+    }
+
+    gotoPage(page){
+        var pageSize = this.state.paging.pageSize;
+        var viewFiles = [];
+        for (
+            var i = (pageSize * (page-1))   ; 
+            i < pageSize * page && i < this.state.allfiles.length; 
+            i++){
+            viewFiles.push(this.state.allfiles[i])
+        }
+
+        this.setState(() => ({
+            files: viewFiles,
+            paging: {
+                pageSize: this.state.paging.pageSize,
+                page: page
+            }
+        }));           
+    }
+
+
     render(){
 
         let myPaddingStyle = {
@@ -143,6 +168,12 @@ class List extends React.Component{
             return (
                 <div>
                     <LinearProgress mode="indeterminate" style={loaderStyle}/>
+                    {/* <div>
+                        <Pagination 
+                            pageSize={this.state.paging.pageSize}
+                            itemsCount={this.state.allfiles.length}
+                            onPageChange={this.gotoPage}/>
+                    </div> */}
                     <Table selectable={true} multiSelectable={true} 
                         style={{tableLayout: 'auto', padding: '0 !important'}} 
                         onRowSelection={this.onRowSelection.bind(this)}>
