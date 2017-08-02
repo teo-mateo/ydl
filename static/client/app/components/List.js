@@ -28,7 +28,8 @@ class List extends React.Component{
             paging: {
                 page: 1,
                 pageSize:5
-            }
+            }, 
+            searchTerm: ""
         }
 
         this.gotoPage = this.gotoPage.bind(this);
@@ -40,10 +41,14 @@ class List extends React.Component{
         Api.GetList(user)
             .then(songs => {
                 songs.forEach(function(s){ s.isSelected=false;});
-                this.setState({ 
+
+                var newState = {
                     allfiles: songs,
-                    files: songs, 
-                    loading: false })
+                    files: songs,
+                    loading: false
+                };
+
+                this.setState(newState);
         });
     }
 
@@ -58,6 +63,29 @@ class List extends React.Component{
 
     componentWillReceiveProps(nextProps){
 
+        if (this.props.searchTerm !== nextProps.searchTerm){
+
+            //no new search term
+            if (!nextProps.searchTerm || nextProps.searchTerm === ""){
+                this.setState({
+                    allfiles: this.state.allfiles, 
+                    files: this.state.allfiles,
+                    loading: false
+                });
+                return;
+            } else {
+
+                var newState = {
+                    allfiles: this.state.allfiles,
+                    files: this.state.allfiles.filter((s) => s.FileName.toLowerCase().indexOf(nextProps.searchTerm.toLowerCase()) >= 0),
+                    loading: false
+                };
+
+                this.setState(newState);           
+                return; 
+            }
+        }
+
         if (this.props.selectedUser === nextProps.selectedUser)
             return;
 
@@ -65,7 +93,8 @@ class List extends React.Component{
         this.setState({
             allfiles: [], 
             files: [], 
-            loading: true
+            loading: true, 
+            searchTerm: nextProps.searchTerm
         });
 
         this.loadSongs(nextProps.selectedUser);      
@@ -246,7 +275,7 @@ class List extends React.Component{
             return (
                 <div>
                     <LinearProgress mode="indeterminate" style={loaderStyle}/>
-                    <p>Loading.</p>
+                    <p>No result.</p>
                 </div>
                 
             )
@@ -257,7 +286,8 @@ class List extends React.Component{
 List.propTypes = {
     selectedUser: PropTypes.string,
     onSelect: PropTypes.func.isRequired,
-    selectedSongs: PropTypes.array.isRequired
+    selectedSongs: PropTypes.array.isRequired,
+    searchTerm: PropTypes.string
 }
 
 module.exports = List;

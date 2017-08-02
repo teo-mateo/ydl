@@ -34,21 +34,32 @@ class App extends React.Component{
     super()
     this.state = {
       selectedUser: "", 
-      selectedSongs: []
+      selectedSongs: [],
+      searchTerm: ""
     }
+
+    this.onSearch = this.onSearch.bind(this);
+    this.renderMain = this.renderMain.bind(this);
   }
 
   renderMain({match}){
+    var searchTerm = this.state.searchTerm;
     return (
-      <Main selectedUser={match.params.selectedUser || ""} />
+      <Main selectedUser={match.params.selectedUser || ""} searchTerm={searchTerm} />
     )
+  }
+
+  onSearch(term){
+    this.setState({
+      searchTerm: term
+    });
   }
 
   render(){
     return (
       <MuiThemeProvider>
         <div>
-          <AppBar title={<Header />}/>
+          <AppBar title={<Header onSearch={this.onSearch} />}/>
 
           <Router>
             <Switch>
