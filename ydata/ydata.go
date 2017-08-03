@@ -176,3 +176,4 @@ type YQueue struct {
 func (yq *YQueue) SetFileSize(fileSize int64){
 	yq.FileSize = fileSize
 }
+

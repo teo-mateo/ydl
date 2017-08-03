@@ -27,6 +27,8 @@ func FileExists(file string) bool {
 func SendHTTPError(w http.ResponseWriter, err error) {
 	log.Println(err.Error())
 	debug.PrintStack()
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
 

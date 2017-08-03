@@ -22,8 +22,22 @@ Api.GetUsers = function(){
     var uri = Api.GetUri('/users')
     return axios.get(uri)
         .then(function(response){
-            return response.data
+            return response.data;
+        })
+        .catch(function(err){
+            console.log("Axios: error in Api.GetUsers(): " + err);
         });
+}
+
+Api.MultiDelete = function(ids){
+    var uri = Api.GetUri('/multidelete');
+    return axios.post(uri, ids)
+        .then(function(response){
+            return response.data;
+        })
+        .catch(function(err){
+            console.log("Axios: error in Api.MultiDelete(): " + err);
+        })
 }
 
 
