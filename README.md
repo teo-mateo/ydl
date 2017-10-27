@@ -45,6 +45,10 @@ It has a chrome extension that lets me just click a button when I like a song, a
  
  6. don't abuse it; don't delete other people's songs. do delete your songs from time to time. 
     the system is being monitored 24/7 by myself, but only when I remember to do that. 
-    suspicious activity will be thoroughly ignored.   
+    all suspicious activity will be thoroughly ignored.   
  
- 7. don't be mean to puppies.
+ 7. don't share this to others.    
+ 
+ 8. don't be mean to puppies.    
+ 
+ 
