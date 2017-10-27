@@ -15,7 +15,7 @@ It has a chrome extension that lets me just click a button when I like a song, a
 *you only need the folder chrome-ext.
 
 2. make a small change to a js file. This will implicitly create your profile.
-   The file is chrome-ext/popup.js
+   The file is **chrome-ext/popup.js**
    
    Modify this code:
    
@@ -23,7 +23,7 @@ It has a chrome extension that lets me just click a button when I like a song, a
     var x = new XMLHttpRequest();   
     x.open('GET', "http://localhost:8080/ydl?who=otheruser&v="+url);   
     
-    and change the "who" parameter from "otheruser" to however you want to name your user.
+    and change the **"who"** parameter from "otheruser" to however you want to name your user.
    
    save the file.
      -Cpt. Obvious
