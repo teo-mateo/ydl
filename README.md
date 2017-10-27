@@ -23,7 +23,8 @@ It has a chrome extension that lets me just click a button when I like a song, a
     var x = new XMLHttpRequest();   
     x.open('GET', "http://localhost:8080/ydl?who=otheruser&v="+url);   
     
-    and change the **"who"** parameter from "otheruser" to however you want to name your user.
+    ----> change the **"who"** parameter from "otheruser" to however you want to name your user.
+    ----> change the url from localhost to **http://bardici.ro:8080/...**
    
    save the file.
      -Cpt. Obvious
