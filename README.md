@@ -9,7 +9,7 @@ So I made this downloader that is running on one of my VMs.
 It has a chrome extension that lets me just click a button when I like a song, and it will be downloaded and converted to MP3 on my server; then I only need to fetch them from time to time. 
 
 
-#to use:
+# instructions:
 1. git clone git@github.com:teo-mateo/ydl.git
 
 *you only need the folder chrome-ext.
