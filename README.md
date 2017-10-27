@@ -29,9 +29,13 @@ It has a chrome extension that lets me just click a button when I like a song, a
    
  3. install the extension
     Use Chrome
+    
     Navigate to chrome://extensions/
+    
     Click on "Load unpacked extension"
+    
     Select the /chrome-ext folder
+    
  
  4. my pretty face will show up in your chrome toolbar. click it when you like dat song.
  
