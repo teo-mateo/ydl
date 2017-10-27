@@ -47,7 +47,7 @@ It has a chrome extension that lets me just click a button when I like a song, a
     the system is being monitored 24/7 by myself, but only when I remember to do that. 
     all suspicious activity will be thoroughly ignored.   
  
- 7. don't share this to others.    
+ 7. don't share this with others.    
  
  8. don't be mean to puppies.    
  
