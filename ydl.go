@@ -19,7 +19,7 @@ func main() {
 
 	cleanup.StartCleanupRoutine()
 
-	//http.HandleFunc("/", handlers.RootHandler)
+	http.HandleFunc("/", handlers.RootHandler)
 	http.HandleFunc("/users", cors(handlers.UsersHandler))
 	http.HandleFunc("/ydl", handlers.QueueHandler)
 	http.HandleFunc("/list/", handlers.ListHandler)
@@ -29,7 +29,7 @@ func main() {
 	http.HandleFunc("/delete", handlers.DeleteHandler)
 	http.HandleFunc("/multidelete", cors(handlers.MultiDeleteHandler))
 	http.HandleFunc("/static/", handlers.StaticFilesHandler)
-	//http.HandleFunc("/app", handlers.RootHandler)
+	http.HandleFunc("/app", handlers.RootHandler)
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

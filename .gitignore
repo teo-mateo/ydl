@@ -16,6 +16,7 @@
 # needs only to exist on srv
 pull.sh
 
+.idea/
 tmp/
 ami/
 andreea/
